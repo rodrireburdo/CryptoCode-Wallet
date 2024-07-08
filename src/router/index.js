@@ -1,25 +1,58 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import LoginView from '@/views/LoginView.vue';
+import InitialView from '@/views/InitialView.vue';
+import HomeView from '@/views/HomeView.vue';
+import BuyCryptoView from '@/views/BuyCryptoView.vue';
+import SellCryptoView from '@/views/SellCryptoView.vue';
+import HistoryView from '@/views/HistoryView.vue';
+import TransactionEditView from '@/views/TransactionEditView.vue'; 
+import TransactionDetailView from '@/views/TransactionDetailView.vue'; 
 
 const routes = [
   {
     path: '/',
-    name: 'home',
-    component: HomeView
+    name: 'HomeView',
+    component: HomeView,
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  }
-]
+    path: '/login',
+    name: 'LoginView',
+    component: LoginView,
+  },
+  {
+    path: '/initial',
+    name: 'InitialView',
+    component: InitialView,
+  },
+  {
+    path: '/buy-crypto',
+    name: 'BuyCryptoView',
+    component: BuyCryptoView,
+  },
+  {
+    path: '/sell-crypto',
+    name: 'SellCryptoView',
+    component: SellCryptoView,
+  },
+  {
+    path: '/history',
+    name: 'HistoryView',
+    component: HistoryView,
+  },
+  { path: '/transaction/:id/edit', 
+    name: 'TransactionEdit', 
+    component: TransactionEditView 
+  },
+  { path: '/transaction/:id', 
+    name: 'TransactionDetail', 
+    component: TransactionDetailView 
+  },
+];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;
+
