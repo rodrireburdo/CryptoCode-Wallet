@@ -6,5 +6,7 @@
 </script>
 
 <style lang="scss">
-/* Estilos específicos de App.vue, usando SCSS */
+body {
+  background-color: #f5f5f5;
+}
 </style>

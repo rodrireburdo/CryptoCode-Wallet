@@ -4,16 +4,30 @@
             <label for="crypto">Criptomoneda:</label>
             <select v-model="crypto" @change="fetchCryptoPrice" required>
                 <option value="" disabled>Seleccione una criptomoneda</option>
-                <option value="bitcoin">Bitcoin</option>
-                <option value="usdc">USDC</option>
-                <option value="ethereum">Ethereum</option>
+                <option value="btc">Bitcoin (BTC)</option>
+                <option value="dai">Dai (DAI)</option>
+                <option value="eth">Ethereum (ETH)</option>
+                <option value="usdt">Tether (USDT)</option>
+                <option value="wld">Worldcoin (WLD)</option>
             </select>
 
-            <label for="amount">Cantidad:</label>
-            <input type="number" v-model="amount" @input="updatePrice" step="0.00001" required />
+            <button type="button" @click="toggleInputMode">
+                {{ inputMode === 'crypto' ? 'Cambiar a Monto en ARS' : 'Cambiar a Cantidad de Criptomonedas' }}
+            </button>
 
-            <label for="price">Precio (ARS):</label>
-            <input type="number" v-model="price" step="0.01" readonly />
+            <label v-if="inputMode === 'crypto'" for="amount">Cantidad de Criptomonedas:</label>
+            <input v-if="inputMode === 'crypto'" type="number" v-model="amount" @input="updatePriceFromAmount"
+                step="0.00001" required />
+
+            <label v-if="inputMode === 'money'" for="money">Monto en ARS:</label>
+            <input v-if="inputMode === 'money'" type="number" v-model="money" @input="updateAmountFromMoney" step="0.01"
+                required />
+
+            <label v-if="inputMode === 'crypto'" for="price">Precio (ARS):</label>
+            <input v-if="inputMode === 'crypto'" type="number" v-model="price" step="0.01" readonly />
+
+            <label v-if="inputMode === 'money'" for="cryptoAmount">Cantidad de Criptomonedas a Comprar:</label>
+            <input v-if="inputMode === 'money'" type="number" v-model="calculatedAmount" step="0.00001" readonly />
 
             <button type="submit">Guardar</button>
         </form>
@@ -21,56 +35,68 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useUserStore } from '@/stores/useUserStore';
+import { useCryptoPricesStore } from '@/stores/useCryptoPricesStore';
 import apiClient from '@/services/apiClient';
-import axios from 'axios';
 
 const userStore = useUserStore();
+const cryptoPricesStore = useCryptoPricesStore();
 const userName = userStore.userName;
 
 // Variables reactivas para los campos del formulario
 const crypto = ref('');
 const amount = ref('');
+const money = ref('');
 const price = ref('');
 const unitPrice = ref(0); // Precio unitario de la criptomoneda
+const inputMode = ref('crypto'); // Modo de entrada: 'crypto' o 'money'
+const calculatedAmount = ref(''); // Cantidad de criptomonedas calculada a partir del monto en ARS
+
+// Alternar el modo de entrada
+const toggleInputMode = () => {
+    inputMode.value = inputMode.value === 'crypto' ? 'money' : 'crypto';
+    amount.value = '';
+    money.value = '';
+    price.value = '';
+    calculatedAmount.value = '';
+};
 
 // Obtener el precio de la criptomoneda seleccionada
-const fetchCryptoPrice = async () => {
+const fetchCryptoPrice = () => {
     if (!crypto.value) return;
+    unitPrice.value = cryptoPricesStore.prices[crypto.value].ask || 0;
+    updatePriceFromAmount();
+};
 
-    const endpointMap = {
-        bitcoin: 'argenbtc/btc/ars',
-        usdc: 'argenbtc/usdc/ars',
-        ethereum: 'argenbtc/eth/ars'
-    };
-
-    const endpoint = endpointMap[crypto.value];
-    if (!endpoint) return;
-
-    try {
-        const response = await axios.get(`https://criptoya.com/api/${endpoint}`);
-        unitPrice.value = response.data.totalBid; // Usar el valor adecuado de la respuesta de la API
-        updatePrice();
-    } catch (error) {
-        console.error('Error al obtener el precio de la criptomoneda:', error);
-        alert('Hubo un error al obtener el precio de la criptomoneda');
+// Actualizar el precio total basado en la cantidad de criptomonedas
+const updatePriceFromAmount = () => {
+    if (amount.value && unitPrice.value) {
+        price.value = (amount.value * unitPrice.value).toFixed(2);
+        money.value = '';
+        calculatedAmount.value = '';
+    } else {
+        price.value = 0;
     }
 };
 
-// Actualizar el precio total basado en la cantidad de criptomoneda
-const updatePrice = () => {
-    if (amount.value && unitPrice.value) {
-        price.value = (amount.value * unitPrice.value).toFixed(2);
+// Actualizar la cantidad de criptomonedas basado en el monto de dinero
+const updateAmountFromMoney = () => {
+    if (money.value && unitPrice.value) {
+        calculatedAmount.value = (money.value / unitPrice.value).toFixed(5);
+        price.value = money.value;
     } else {
-        price.value = 0;
+        calculatedAmount.value = 0;
     }
 };
 
 // Enviar la transacción a la API
 const submitTransaction = async () => {
     // Validar que los datos sean correctos
-    if (amount.value <= 0 || price.value <= 0) {
+    const finalAmount = inputMode.value === 'crypto' ? amount.value : calculatedAmount.value;
+    const finalPrice = inputMode.value === 'crypto' ? price.value : money.value;
+
+    if (finalAmount <= 0 || finalPrice <= 0) {
         alert('La cantidad y el precio deben ser mayores a 0');
         return;
     }
@@ -84,8 +110,8 @@ const submitTransaction = async () => {
         user_id: userName,
         action: 'purchase',
         crypto_code: crypto.value,
-        crypto_amount: amount.value,
-        money: price.value,
+        crypto_amount: finalAmount,
+        money: finalPrice,
         datetime: formattedDatetime
     };
 
@@ -98,19 +124,41 @@ const submitTransaction = async () => {
         alert('Hubo un error al guardar la transacción');
     }
 };
+
+// Llamar a fetchPrices del store cuando el componente se monta
+onMounted(() => {
+    cryptoPricesStore.fetchPrices();
+});
 </script>
 
-<style scoped>
-/* Estilos para el formulario */
+<style scoped lang="scss">
 form {
+    max-width: 600px;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
 }
 
-label,
+label {
+    margin-top: 10px;
+}
+
 input,
-select,
+select {
+    padding: 8px;
+    margin-top: 5px;
+}
+
 button {
-    margin: 8px 0;
+    margin-top: 15px;
+    padding: 10px;
+    background-color: $primary-color;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: $secondary-color;
 }
 </style>

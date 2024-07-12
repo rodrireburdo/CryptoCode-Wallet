@@ -1,9 +1,6 @@
 <template>
     <HeaderApp/>
     <NavApp/>
-    <h1>
-        vender criptomonedas
-    </h1>
     <SellComponent/>
 </template>
 

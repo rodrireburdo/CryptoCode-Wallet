@@ -1,9 +1,6 @@
 <template>
     <HeaderApp/>
     <NavApp/>
-    <h1>
-        Historial de criptomonedas
-    </h1>
     <HistoryComponent/>
 </template>
 

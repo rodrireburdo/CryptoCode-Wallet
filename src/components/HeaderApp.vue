@@ -1,11 +1,13 @@
 <template>
     <div class="header">
-        <img src="../assets/logo.png" alt="Logo" class="imgLogo">
+        <div class="logo">
+            <img src="../assets/logo.png" alt="Logo" class="imgLogo">
+            <h1>CriptoCoint</h1>
+        </div>
         <div class="dropdown" @click="toggleDropdown">
             <button>{{ buttonText }}</button>
             <div v-if="showDropdown" class="dropdown-content">
                 <a v-if="userName" @click="logout">Cerrar Sesión</a>
-                <a v-else @click="login">Iniciar Sesión</a>
             </div>
         </div>
     </div>
@@ -30,10 +32,6 @@ const buttonText = computed(() => {
     return userName.value ? userName.value : 'Inicie Sesión';
 });
 
-const login = () => {
-    router.push({ name: 'LoginView' });
-};
-
 const logout = () => {
     userStore.setUserName('');
     localStorage.removeItem('userName');
@@ -46,10 +44,18 @@ const logout = () => {
 .header {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    margin: 0px 50px 10px 50px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    height: 60px;
 }
 
 .imgLogo {
-    height: 40px;
+    height: 60px;
     margin-right: 20px;
 }
 
@@ -60,27 +66,32 @@ const logout = () => {
 }
 
 .dropdown-content {
-    display: none;
+    display: flex;
     position: absolute;
+    justify-content: center;
+    align-items: center;
     background-color: white;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     padding: 12px 16px;
+    min-width: 100px;
     z-index: 1;
 }
 
 .dropdown-content a {
     text-decoration: none;
-    display: block;
-    padding: 8px 0;
+    display: flex;
+    justify-content: center;
 }
 
-.dropdown:hover .dropdown-content {
+.dropdown:hover 
+.dropdown-content {
     display: block;
     cursor: pointer;
 }
 
 button {
     padding: 10px 20px;
+    min-width: 100px;
     font-size: 16px;
 }
 </style>

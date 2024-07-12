@@ -1,12 +1,14 @@
 <template>
     <div>
-        <form @submit.prevent="submitTransaction">
+        <form @submit.prevent="submitTransaction" class="form">
             <label for="crypto">Criptomoneda:</label>
             <select v-model="crypto" @change="fetchCryptoPrice" required>
                 <option value="" disabled>Seleccione una criptomoneda</option>
-                <option value="bitcoin">Bitcoin</option>
-                <option value="usdc">USDC</option>
-                <option value="ethereum">Ethereum</option>
+                <option value="btc">Bitcoin (BTC)</option>
+                <option value="dai">Dai (DAI)</option>
+                <option value="eth">Ethereum (ETH)</option>
+                <option value="usdt">Tether (USDT)</option>
+                <option value="wld">Worldcoin (WLD)</option>
             </select>
 
             <label for="amount">Cantidad:</label>
@@ -24,44 +26,35 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useUserStore } from '@/stores/useUserStore';
+import { useCryptoPricesStore } from '@/stores/useCryptoPricesStore';
+import { useCryptoBalanceStore } from '@/stores/useCryptoBalanceStore';
 import apiClient from '@/services/apiClient';
-import axios from 'axios';
 
 const userStore = useUserStore();
-const userName = userStore.userName;
+const userName = computed(() => userStore.userName);
+const cryptoPricesStore = useCryptoPricesStore();
+const cryptoBalanceStore = useCryptoBalanceStore();
 
 // Variables reactivas para los campos del formulario
 const crypto = ref('');
 const amount = ref('');
-const unitPrice = ref(0); // Precio unitario de la criptomoneda
-const totalReceived = ref(0); // Total a recibir en ARS
+const unitPrice = ref(0);
+const totalReceived = ref(0);
 
-// Obtener el precio de la criptomoneda seleccionada
 const fetchCryptoPrice = async () => {
     if (!crypto.value) return;
 
-    const endpointMap = {
-        bitcoin: 'argenbtc/btc/ars',
-        usdc: 'argenbtc/usdc/ars',
-        ethereum: 'argenbtc/eth/ars'
-    };
-
-    const endpoint = endpointMap[crypto.value];
-    if (!endpoint) return;
-
-    try {
-        const response = await axios.get(`https://criptoya.com/api/${endpoint}`);
-        unitPrice.value = response.data.totalBid; // Usar el valor adecuado de la respuesta de la API
+    await cryptoPricesStore.fetchPrices();
+    unitPrice.value = cryptoPricesStore.prices[crypto.value]?.bid;
+    if (unitPrice.value) {
         updatePrice();
-    } catch (error) {
-        console.error('Error al obtener el precio de la criptomoneda:', error);
-        alert('Hubo un error al obtener el precio de la criptomoneda');
+    } else {
+        alert('Error al obtener el precio de la criptomoneda');
     }
 };
 
-// Actualizar el precio total basado en la cantidad de criptomoneda
 const updatePrice = () => {
     if (amount.value && unitPrice.value) {
         totalReceived.value = (amount.value * unitPrice.value).toFixed(2);
@@ -70,50 +63,70 @@ const updatePrice = () => {
     }
 };
 
-// Enviar la transacción de venta a la API
 const submitTransaction = async () => {
-    // Validar que los datos sean correctos
     if (amount.value <= 0 || totalReceived.value <= 0) {
         alert('La cantidad y el total a recibir deben ser mayores a 0');
         return;
     }
 
-    // Capturar la fecha y hora actual
+    // Verificar si el usuario tiene suficiente cantidad de la criptomoneda seleccionada
+    if (amount.value > cryptoBalanceStore.balances[crypto.value]) {
+        alert('No tienes suficiente cantidad de la criptomoneda seleccionada');
+        return;
+    }
+
     const now = new Date();
     const formattedDatetime = now.toLocaleString('en-GB', { hour12: false }).replace(',', '');
 
-    // Construir el objeto de la transacción
     const transaction = {
-        user_id: userName,
+        user_id: userName.value,
         action: 'sale',
         crypto_code: crypto.value,
         crypto_amount: amount.value,
         money: totalReceived.value,
-        datetime: formattedDatetime
+        datetime: formattedDatetime,
     };
 
-    // Enviar la solicitud POST a la API
     try {
         await apiClient.post('/transactions', transaction);
-        alert('Transacción de venta realizada con éxito');
+        cryptoBalanceStore.updateBalance(crypto.value, amount.value, 'sale');
+        alert('Transacción guardada con éxito');
     } catch (error) {
-        console.error('Error al realizar la transacción de venta:', error);
-        alert('Hubo un error al realizar la transacción de venta');
+        console.error('Error al guardar la transacción:', error);
+        alert('Hubo un error al guardar la transacción');
     }
 };
 </script>
 
-<style scoped>
-/* Estilos para el formulario */
-form {
+
+<style scoped lang="scss">
+.form {
+    max-width: 600px;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
 }
 
-label,
+label {
+    margin-top: 10px;
+}
+
 input,
-select,
+select {
+    padding: 8px;
+    margin-top: 5px;
+}
+
 button {
-    margin: 8px 0;
+    margin-top: 15px;
+    padding: 10px;
+    background-color: $primary-color;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: $secondary-color;
 }
 </style>

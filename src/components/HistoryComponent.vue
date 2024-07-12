@@ -1,18 +1,19 @@
 <template>
     <div>
-        <h1>Historial de Movimientos</h1>
-        <ul>
-            <li v-for="transaction in transactions" :key="transaction._id">
-                <p>Criptomoneda: {{ transaction.crypto_code }}</p>
-                <p>Cantidad: {{ transaction.crypto_amount }}</p>
-                <p>Precio: {{ transaction.money }}</p>
-                <p>Acción: {{ transaction.action }}</p>
-                <p>Fecha y Hora: {{ transaction.datetime }}</p>
-                <button @click="viewTransaction(transaction._id)">Ver</button>
-                <button @click="editTransaction(transaction._id)">Editar</button>
-                <button @click="deleteTransaction(transaction._id)">Eliminar</button>
+        <ul class="transaction-list">
+            <li v-for="transaction in transactions" :key="transaction._id" class="transaction-item">
+                <div class="transaction-info">
+                    <p>{{ getTransactionType(transaction.action) }} de <strong>{{ transaction.crypto_amount }}</strong> {{ transaction.crypto_code }}</p>
+                    <p>Precio: {{ transaction.money }}</p>
+                </div>
+                <div class="transaction-actions">
+                    <button class="btn-view" @click="viewTransaction(transaction._id)">Ver</button>
+                    <button class="btn-edit" @click="editTransaction(transaction._id)">Editar</button>
+                    <button class="btn-delete" @click="deleteTransaction(transaction._id)">Eliminar</button>
+                </div>
             </li>
         </ul>
+        <p v-if="transactions.length === 0" class="no-transactions">No hay movimientos registrados.</p>
     </div>
 </template>
 
@@ -55,28 +56,60 @@ const deleteTransaction = async (id) => {
     }
 };
 
+const getTransactionType = (action) => {
+    return action === 'purchase' ? 'Compra' : 'Venta';
+};
+
 onMounted(fetchTransactions);
 </script>
 
-<style scoped>
-/* Estilos básicos para el historial de movimientos */
-h1 {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-ul {
+<style scoped lang="scss">
+.transaction-list {
     list-style: none;
     padding: 0;
+    margin: 20px 0;
 }
 
-li {
+.transaction-item {
     border: 1px solid #ccc;
-    padding: 10px;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.transaction-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.transaction-info {
     margin-bottom: 10px;
 }
 
-button {
-    margin-right: 10px;
+.transaction-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-view, .btn-edit, .btn-delete {
+    background-color: $primary-color;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-view:hover, .btn-edit:hover, .btn-delete:hover {
+    background-color: $secondary-color;
+}
+
+.no-transactions {
+    text-align: center;
+    margin-top: 20px;
+    color: #888;
 }
 </style>
