@@ -2,7 +2,7 @@
     <div class="header">
         <div class="logo">
             <img src="../assets/logo.png" alt="Logo" class="imgLogo">
-            <h1>CriptoCoint</h1>
+            <h1>CriptoCode</h1>
         </div>
         <div class="dropdown" @click="toggleDropdown">
             <button>{{ buttonText }}</button>
@@ -45,7 +45,7 @@ const logout = () => {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin: 0px 50px 10px 50px;
+    margin: 10px 50px 10px 50px;
 }
 
 .logo {
@@ -66,10 +66,11 @@ const logout = () => {
 }
 
 .dropdown-content {
-    display: flex;
+    display: none; /* Inicialmente oculto */
     position: absolute;
-    justify-content: center;
-    align-items: center;
+    top: 100%; /* Posiciona abajo del botón */
+    left: 50%; /* Centrado horizontalmente */
+    transform: translateX(-50%); /* Ajusta para centrar horizontalmente */
     background-color: white;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     padding: 12px 16px;
@@ -79,14 +80,12 @@ const logout = () => {
 
 .dropdown-content a {
     text-decoration: none;
-    display: flex;
-    justify-content: center;
+    display: block; /* Bloque en lugar de flex para centrar */
+    text-align: center; /* Centrado del texto */
 }
 
-.dropdown:hover 
-.dropdown-content {
-    display: block;
-    cursor: pointer;
+.dropdown:hover .dropdown-content {
+    display: block; /* Mostrar cuando se pasa el mouse */
 }
 
 button {
