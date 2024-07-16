@@ -1,13 +1,29 @@
 <template>
     <div class="actual-state">
-        <h2>Estado Actual de Criptomonedas</h2>
-        <ul>
-            <li v-for="(balance, crypto) in filteredBalances" :key="crypto">
-                <p>{{ crypto.toUpperCase() }}: {{ balance }}</p>
-                <p>Valor de Venta: ${{ getCryptoValueInPesos(crypto, balance) }}</p>
-            </li>
-        </ul>
-        <p v-if="totalValueInPesos > 0">Total: ${{ totalValueInPesos }}</p>
+        <h2>Tus Criptomonedas</h2>
+        <table v-if="Object.keys(filteredBalances).length > 0">
+            <thead>
+                <tr>
+                    <th style="width: 33%;">Criptomoneda</th>
+                    <th style="width: 33%;">Cantidad</th>
+                    <th style="width: 34%;">Valor de Venta (Pesos)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(balance, crypto, index) in filteredBalances" :key="crypto"
+                    :class="index % 2 === 0 ? 'row-even' : 'row-odd'">
+                    <td>{{ crypto.toUpperCase() }}</td>
+                    <td>{{ balance }}</td>
+                    <td>${{ getCryptoValueInPesos(crypto, balance) }}</td>
+                </tr>
+                <tr :class="{ 'row-total': index === filteredBalances.length }">
+                    <td><strong>TOTAL</strong></td>
+                    <td></td>
+                    <td><strong>${{ totalValueInPesos }}</strong></td>
+                </tr>
+            </tbody>
+        </table>
+
         <p v-else>No tienes criptomonedas registradas.</p>
     </div>
 </template>
@@ -51,29 +67,57 @@ const totalValueInPesos = computed(() => {
 });
 </script>
 
-<style scoped>
+<style scoped lang="scss"> 
 .actual-state {
-    margin: 20px;
-    padding: 20px;
     border: 1px solid #ccc;
-    border-radius: 10px;
     background-color: #f9f9f9;
+    padding: 0px 100px;
 }
 
-.actual-state h2 {
+h2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
     margin-bottom: 20px;
+    table-layout: fixed;
 }
 
-.actual-state ul {
-    list-style: none;
-    padding: 0;
+th,
+td {
+    padding: 8px;
+    text-align: center;
 }
 
-.actual-state li {
-    margin-bottom: 10px;
+th {
+    background-color: $primary-color;
+    color: white;
 }
 
-.actual-state p {
-    margin: 5px 0;
+tbody td:first-child {
+    font-weight: bold;
+}
+
+.row-even {
+    background-color: #f2f2f2;
+}
+
+.row-odd {
+    background-color: #e0e0e0;
+}
+
+.row-total {
+    background-color: $primary-color;
+    color: white;
+}
+
+p {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 </style>

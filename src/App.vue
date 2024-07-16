@@ -9,7 +9,6 @@
 body {
   font-family: "Roboto Condensed", sans-serif;
   font-optical-sizing: auto;
-  font-weight: weight;
   font-style: normal;
   height: 100%;
   width: 100%;
