@@ -4,8 +4,8 @@
             <div v-for="(price, crypto) in prices" :key="crypto" class="crypto-item">
                 <img :src="getImageUrl(crypto)" :alt="crypto" class="crypto-image" />
                 <div class="crypto-info">
-                    <p>Venta: {{ price.ask }} ARS</p>
-                    <p>Compra: {{ price.bid }} ARS</p>
+                    <p><strong>Venta:</strong> {{ price.ask }} ARS</p>
+                    <p><strong>Compra:</strong> {{ price.bid }} ARS</p>
                 </div>
             </div>
         </div>

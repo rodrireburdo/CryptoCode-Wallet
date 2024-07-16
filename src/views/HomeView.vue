@@ -15,6 +15,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #fff;
+    padding-top: 20px;
 }
 </style>

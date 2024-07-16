@@ -2,7 +2,7 @@
     <div class="header">
         <div class="logo">
             <img src="../assets/logo.png" alt="Logo" class="imgLogo">
-            <h1>CriptoCode</h1>
+            <h1><strong class="text-1">Cripto</strong><strong class="text-2">Code</strong></h1>
         </div>
         <div class="dropdown" @click="toggleDropdown">
             <button>{{ buttonText }}</button>
@@ -40,7 +40,20 @@ const logout = () => {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+h1 {
+    font-family: "Bevan", serif;
+    font-weight: 400;
+}
+
+.text-2 {
+    color: $primary-color;
+}
+
+.text-1 {
+    color: $secondary-color;
+}
+
 .header {
     display: flex;
     align-items: center;
