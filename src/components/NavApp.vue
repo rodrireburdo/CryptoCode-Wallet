@@ -1,9 +1,9 @@
 <template>
     <nav class="nav">
         <ul>
-            <li><router-link to="/initial" active-class="active">Inicio</router-link></li>
-            <li><router-link to="/buy-crypto" active-class="active">Comprar Cripto</router-link></li>
-            <li><router-link to="/sell-crypto" active-class="active">Vender Cripto</router-link></li>
+            <li><router-link to="/initial" active-class="active">Tus Criptomonedas</router-link></li>
+            <li><router-link to="/buy-crypto" active-class="active">Comprar</router-link></li>
+            <li><router-link to="/sell-crypto" active-class="active">Vender</router-link></li>
             <li><router-link to="/history" active-class="active">Historial</router-link></li>
         </ul>
     </nav>
