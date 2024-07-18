@@ -1,7 +1,7 @@
 <template>
     <div class="actual-state">
         <h2>Tus Criptomonedas</h2>
-        <table v-if="Object.keys(filteredBalances).length > 0">
+        <table>
             <thead>
                 <tr>
                     <th style="width: 33%;">Criptomoneda</th>
@@ -16,15 +16,13 @@
                     <td>{{ balance }}</td>
                     <td>${{ getCryptoValueInPesos(crypto, balance) }}</td>
                 </tr>
-                <tr :class="{ 'row-total': index === filteredBalances.length }">
+                <tr :class="'row-total'">
                     <td><strong>TOTAL</strong></td>
                     <td></td>
                     <td><strong>${{ totalValueInPesos }}</strong></td>
                 </tr>
             </tbody>
         </table>
-
-        <p v-else>No tienes criptomonedas registradas.</p>
     </div>
 </template>
 

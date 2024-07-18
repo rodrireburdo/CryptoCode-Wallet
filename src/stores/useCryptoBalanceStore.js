@@ -33,6 +33,10 @@ export const useCryptoBalanceStore = defineStore('cryptoBalance', {
                     } else if (transaction.action === 'sale') {
                         this.balances[transaction.crypto_code] -= parseFloat(transaction.crypto_amount);
                     }
+
+                    if (this.balances[transaction.crypto_code] < 0) {
+                        this.balances[transaction.crypto_code] = 0;
+                    }
                 });
             } catch (error) {
                 this.error = 'Error al obtener los balances de las criptomonedas.';
@@ -46,6 +50,10 @@ export const useCryptoBalanceStore = defineStore('cryptoBalance', {
                 this.balances[cryptoCode] += parseFloat(amount);
             } else if (action === 'sale') {
                 this.balances[cryptoCode] -= parseFloat(amount);
+            }
+
+            if (this.balances[cryptoCode] < 0) {
+                this.balances[cryptoCode] = 0;
             }
         }
     },

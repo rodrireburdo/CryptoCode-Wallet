@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-    baseURL: 'https://laboratorio-36cf.restdb.io/rest/',
+    baseURL: 'https://labor3-d60e.restdb.io/rest/',
     headers: {
-        'x-apikey': '64a5ccf686d8c5d256ed8fce'
+        'x-apikey': '64a2e9bc86d8c525a3ed8f63'
     }
 });
 

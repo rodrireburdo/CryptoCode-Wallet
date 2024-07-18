@@ -9,12 +9,11 @@
             <BarChart :balances="filteredBalances" class="bar"/>
             <PieChart :balances="filteredBalances" class="pie"/>
         </div>
-        <section v-else>
+        <section v-else class="error-message">
             <p>No tienes criptomonedas registradas.</p>
         </section>
     </div>
 </template>
-
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useUserStore } from '@/stores/useUserStore';
@@ -47,7 +46,6 @@ const filteredBalances = computed(() => {
     );
 });
 </script>
-
 <style scoped>
 .chart-container {
     display: flex;
@@ -68,5 +66,10 @@ const filteredBalances = computed(() => {
     width: 150px;
     margin-top: 10px;
 }
-</style>
 
+.error-message {
+    text-align: center;
+    font-size: 18px;
+    margin-top: 20px;
+}
+</style>

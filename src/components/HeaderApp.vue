@@ -41,10 +41,6 @@ const logout = () => {
 </script>
 
 <style scoped lang="scss">
-h1 {
-    font-family: "Bevan", serif;
-    font-weight: 400;
-}
 
 .text-2 {
     color: $primary-color;
@@ -105,5 +101,11 @@ button {
     padding: 10px 20px;
     min-width: 100px;
     font-size: 16px;
+    background-color: $primary-color;
+    color: white;
+}
+
+button:hover {
+    background-color: $secondary-color;
 }
 </style>

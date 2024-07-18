@@ -10,7 +10,7 @@
             <li v-for="transaction in transactions" :key="transaction._id" class="transaction-item">
                 <div class="transaction-info">
                     <p>{{ getTransactionType(transaction.action) }} de <strong>{{ transaction.crypto_amount }}</strong> {{ transaction.crypto_code }}</p>
-                    <p>Precio: {{ transaction.money }}</p>
+                    <p>$ {{ transaction.money }}</p>
                 </div>
                 <div class="transaction-actions">
                     <button class="btn-view" @click="viewTransaction(transaction._id)">Ver</button>
@@ -72,7 +72,7 @@ const getTransactionType = (action) => {
 onMounted(fetchTransactions);
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .loading-container {
     display: flex;
     justify-content: center;
@@ -104,7 +104,7 @@ onMounted(fetchTransactions);
 .transaction-item {
     display: flex;
     justify-content: space-between;
-    padding: 1em;
+    padding: 15px 50px;
     border-bottom: 1px solid #ddd;
 }
 
@@ -114,25 +114,25 @@ onMounted(fetchTransactions);
 
 .transaction-actions {
     display: flex;
-    gap: 0.5em;
+    gap: 10px;
 }
 
 .btn-view, .btn-edit, .btn-delete {
-    background-color: #007bff;
+    background-color: $primary-color;
     color: #fff;
     border: none;
-    padding: 0.5em 1em;
+    padding: 10px 20px;
     cursor: pointer;
 }
 
 .btn-view:hover, .btn-edit:hover, .btn-delete:hover {
-    background-color: #0056b3;
+    background-color: $secondary-color;
 }
 
 .no-transactions {
     text-align: center;
-    font-size: 1.2em;
-    color: #555;
+    font-size: 18px;
+    margin-top: 20px;
 }
 </style>
 
