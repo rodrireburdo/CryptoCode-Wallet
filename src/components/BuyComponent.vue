@@ -31,6 +31,10 @@
 
             <button type="submit">Guardar</button>
         </form>
+
+        <LoadingModal v-if="loading" />
+        <SuccessModal v-if="showSuccessModal" @close="showSuccessModal = false" />
+        <ErrorModal v-if="showErrorModal" @close="showErrorModal = false" />
     </div>
 </template>
 
@@ -39,6 +43,9 @@ import { ref, onMounted } from 'vue';
 import { useUserStore } from '@/stores/useUserStore';
 import { useCryptoPricesStore } from '@/stores/useCryptoPricesStore';
 import apiClient from '@/services/apiClient';
+import LoadingModal from '@/components/LoadingModal.vue';
+import SuccessModal from '@/components/SuccessModal.vue';
+import ErrorModal from '@/components/ErrorModal.vue';
 
 const userStore = useUserStore();
 const cryptoPricesStore = useCryptoPricesStore();
@@ -52,14 +59,14 @@ const price = ref('');
 const unitPrice = ref(0); // Precio unitario de la criptomoneda
 const inputMode = ref('crypto'); // Modo de entrada: 'crypto' o 'money'
 const calculatedAmount = ref(''); // Cantidad de criptomonedas calculada a partir del monto en ARS
+const loading = ref(false); // Estado de carga
+const showSuccessModal = ref(false); // Mostrar modal de éxito
+const showErrorModal = ref(false); // Mostrar modal de error
 
 // Alternar el modo de entrada
 const toggleInputMode = () => {
     inputMode.value = inputMode.value === 'crypto' ? 'money' : 'crypto';
-    amount.value = '';
-    money.value = '';
-    price.value = '';
-    calculatedAmount.value = '';
+    clearFormFields();
 };
 
 // Obtener el precio de la criptomoneda seleccionada
@@ -90,6 +97,15 @@ const updateAmountFromMoney = () => {
     }
 };
 
+// Limpiar los campos del formulario
+const clearFormFields = () => {
+    crypto.value = '';
+    amount.value = '';
+    money.value = '';
+    price.value = '';
+    calculatedAmount.value = '';
+};
+
 // Enviar la transacción a la API
 const submitTransaction = async () => {
     // Validar que los datos sean correctos
@@ -115,13 +131,18 @@ const submitTransaction = async () => {
         datetime: formattedDatetime
     };
 
+    loading.value = true; // Mostrar el modal de carga
+    
     // Enviar la solicitud POST a la API
     try {
         await apiClient.post('/transactions', transaction);
-        alert('Transacción guardada con éxito');
+        showSuccessModal.value = true; // Mostrar el modal de éxito
+        clearFormFields(); // Limpiar los campos del formulario
     } catch (error) {
         console.error('Error al guardar la transacción:', error);
-        alert('Hubo un error al guardar la transacción');
+        showErrorModal.value = true; // Mostrar el modal de error
+    } finally {
+        loading.value = false; // Ocultar el modal de carga
     }
 };
 

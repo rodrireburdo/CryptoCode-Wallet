@@ -20,6 +20,8 @@
             </li>
         </ul>
         <p v-if="transactions.length === 0 && !loading" class="no-transactions">No hay movimientos registrados.</p>
+
+        <LoadingModal v-if="deleteLoading" />
     </div>
 </template>
 
@@ -28,9 +30,11 @@ import { ref, onMounted } from 'vue';
 import apiClient from '@/services/apiClient';
 import { useUserStore } from '@/stores/useUserStore';
 import { useRouter } from 'vue-router';
+import LoadingModal from '@/components/LoadingModal.vue';
 
 const transactions = ref([]);
 const loading = ref(true);
+const deleteLoading = ref(false);
 const userStore = useUserStore();
 const router = useRouter();
 
@@ -54,14 +58,14 @@ const editTransaction = (id) => {
 };
 
 const deleteTransaction = async (id) => {
-    if (confirm('¿Estás seguro de que deseas eliminar esta transacción?')) {
-        try {
-            await apiClient.delete(`/transactions/${id}`);
-            fetchTransactions(); 
-            alert('Transacción eliminada con éxito');
-        } catch (error) {
-            console.error('Error al eliminar la transacción:', error);
-        }
+    deleteLoading.value = true; // Mostrar el modal de carga
+    try {
+        await apiClient.delete(`/transactions/${id}`);
+        fetchTransactions(); 
+    } catch (error) {
+        console.error('Error al eliminar la transacción:', error);
+    } finally {
+        deleteLoading.value = false; // Ocultar el modal de carga
     }
 };
 

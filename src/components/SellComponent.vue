@@ -21,16 +21,24 @@
             <input type="number" v-model="totalReceived" step="0.01" readonly />
 
             <button type="submit">Vender</button>
+            <p v-if="formError" class="error-message">{{ formError }}</p>
         </form>
+
+        <LoadingModal v-if="loading" />
+        <SuccessModal v-if="showSuccessModal" @close="showSuccessModal = false" :message="successMessage" />
+        <ErrorModal v-if="showErrorModal" @close="showErrorModal = false" :message="errorMessage" />
     </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useUserStore } from '@/stores/useUserStore';
 import { useCryptoPricesStore } from '@/stores/useCryptoPricesStore';
 import { useCryptoBalanceStore } from '@/stores/useCryptoBalanceStore';
 import apiClient from '@/services/apiClient';
+import LoadingModal from '@/components/LoadingModal.vue';
+import SuccessModal from '@/components/SuccessModal.vue';
+import ErrorModal from '@/components/ErrorModal.vue';
 
 const userStore = useUserStore();
 const userName = computed(() => userStore.userName);
@@ -42,6 +50,21 @@ const crypto = ref('');
 const amount = ref('');
 const unitPrice = ref(0);
 const totalReceived = ref(0);
+const loading = ref(false); // Estado de carga
+const showSuccessModal = ref(false); // Mostrar modal de éxito
+const showErrorModal = ref(false); // Mostrar modal de error
+const successMessage = ref(''); // Mensaje de éxito
+const errorMessage = ref(''); // Mensaje de error
+const formError = ref(''); // Mensaje de error del formulario
+
+onMounted(async () => {
+    try {
+        await cryptoBalanceStore.fetchBalances(userName.value);
+    } catch (error) {
+        errorMessage.value = 'Error al cargar los balances del usuario';
+        showErrorModal.value = true;
+    }
+});
 
 const fetchCryptoPrice = async () => {
     if (!crypto.value) return;
@@ -51,7 +74,7 @@ const fetchCryptoPrice = async () => {
     if (unitPrice.value) {
         updatePrice();
     } else {
-        alert('Error al obtener el precio de la criptomoneda');
+        formError.value = 'Error al obtener el precio de la criptomoneda';
     }
 };
 
@@ -63,15 +86,25 @@ const updatePrice = () => {
     }
 };
 
+const resetForm = () => {
+    crypto.value = '';
+    amount.value = '';
+    unitPrice.value = 0;
+    totalReceived.value = 0;
+    formError.value = '';
+};
+
 const submitTransaction = async () => {
+    formError.value = '';
+
     if (amount.value <= 0 || totalReceived.value <= 0) {
-        alert('La cantidad y el total a recibir deben ser mayores a 0');
+        formError.value = 'La cantidad y el total a recibir deben ser mayores a 0';
         return;
     }
 
     // Verificar si el usuario tiene suficiente cantidad de la criptomoneda seleccionada
     if (amount.value > cryptoBalanceStore.balances[crypto.value]) {
-        alert('No tienes suficiente cantidad de la criptomoneda seleccionada');
+        formError.value = 'No tienes suficiente cantidad de la criptomoneda seleccionada';
         return;
     }
 
@@ -87,13 +120,18 @@ const submitTransaction = async () => {
         datetime: formattedDatetime,
     };
 
+    loading.value = true; // Mostrar el modal de carga
+
     try {
         await apiClient.post('/transactions', transaction);
         cryptoBalanceStore.updateBalance(crypto.value, amount.value, 'sale');
-        alert('Transacción guardada con éxito');
+        successMessage.value = 'Transacción guardada con éxito';
+        showSuccessModal.value = true; // Mostrar el modal de éxito
+        resetForm(); // Restablecer el formulario
     } catch (error) {
-        console.error('Error al guardar la transacción:', error);
-        alert('Hubo un error al guardar la transacción');
+        formError.value = 'Hubo un error al guardar la transacción';
+    } finally {
+        loading.value = false; // Ocultar el modal de carga
     }
 };
 </script>
@@ -128,5 +166,11 @@ button {
 
 button:hover {
     background-color: $secondary-color;
+}
+
+.error-message {
+    display: flex;
+    justify-content: center;
+    color: red;
 }
 </style>
