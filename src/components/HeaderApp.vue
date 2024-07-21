@@ -2,7 +2,7 @@
     <div class="header">
         <div class="logo">
             <img src="../assets/logo.png" alt="Logo" class="imgLogo">
-            <h1><strong class="text-1">Cripto</strong><strong class="text-2">Code</strong></h1>
+            <h1><strong class="text-1">Crypto</strong><strong class="text-2">Code</strong></h1>
         </div>
         <div class="dropdown" @click="toggleDropdown">
             <button>{{ buttonText }}</button>

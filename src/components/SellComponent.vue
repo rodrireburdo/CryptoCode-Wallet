@@ -109,7 +109,8 @@ const submitTransaction = async () => {
     }
 
     const now = new Date();
-    const formattedDatetime = now.toLocaleString('en-GB', { hour12: false }).replace(',', '');
+    const formattedDatetime = now.toISOString();
+
 
     const transaction = {
         user_id: userName.value,

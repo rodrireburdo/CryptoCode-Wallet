@@ -119,7 +119,7 @@ const submitTransaction = async () => {
 
     // Capturar la fecha y hora actual
     const now = new Date();
-    const formattedDatetime = now.toLocaleString('en-GB', { hour12: false }).replace(',', '');
+    const formattedDatetime = now.toISOString();
 
     // Construir el objeto de la transacción
     const transaction = {

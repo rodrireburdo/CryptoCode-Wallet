@@ -2,7 +2,7 @@
     <div class="welcome-section">
         <div class="div-logo">
             <img src="../assets/logo.png" class="img-logo" alt="Logo">
-            <h1><strong class="text-1">Cripto</strong><strong class="text-2">Code</strong></h1>
+            <h1><strong class="text-1">Crypto</strong><strong class="text-2">Code</strong></h1>
         </div>
         <h4>Tu plataforma para gestionar tus criptomonedas con facilidad y confianza.</h4>
         <p>Donde tu seguridad y comodidad son nuestra prioridad</p>

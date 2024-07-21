@@ -1,10 +1,7 @@
 <template>
     <div>
         <div v-if="loading" class="loading-container">
-            <div class="loading-message">
-                <p>Cargando...</p>
-                <img src="@/assets/Loading.gif" alt="Cargando..." class="GifLoading">
-            </div>
+            <LoadingComponent class="loading-message"/>
         </div>
         <ul v-else class="transaction-list">
             <li v-for="transaction in transactions" :key="transaction._id" class="transaction-item">
@@ -20,7 +17,6 @@
             </li>
         </ul>
         <p v-if="transactions.length === 0 && !loading" class="no-transactions">No hay movimientos registrados.</p>
-
         <LoadingModal v-if="deleteLoading" />
     </div>
 </template>
@@ -31,6 +27,8 @@ import apiClient from '@/services/apiClient';
 import { useUserStore } from '@/stores/useUserStore';
 import { useRouter } from 'vue-router';
 import LoadingModal from '@/components/LoadingModal.vue';
+import LoadingComponent from './LoadingComponent.vue';
+
 
 const transactions = ref([]);
 const loading = ref(true);
@@ -88,15 +86,6 @@ onMounted(fetchTransactions);
     width: 100%;
     height: 100%;
     z-index: 1000;
-}
-
-.loading-message {
-    text-align: center;
-    color: #555;
-}
-
-.GifLoading {
-    width: 150px;
 }
 
 .transaction-list {

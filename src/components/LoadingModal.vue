@@ -1,8 +1,8 @@
 <template>
     <div class="modal-overlay">
         <div class="modal-content">
-            <p>Cargando...</p>
-            <img src="@/assets/Loading.gif" alt="Cargando..." class="loading-gif">
+            <p>Procesando...</p>
+            <img src="@/assets/Loading.gif" alt="Procesando..." class="loading-gif">
         </div>
     </div>
 </template>
@@ -18,21 +18,20 @@
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    color: #fff;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .modal-content {
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: white;
     padding: 20px;
     border-radius: 10px;
     text-align: center;
 }
 
 .loading-gif {
-    width: 100px;
+    width: 150px;
     margin-top: 10px;
 }
 </style>

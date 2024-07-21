@@ -1,9 +1,6 @@
 <template>
     <div class="actual-state">
-        <div v-if="loading" class="loading-message">
-            <p>Cargando...</p>
-            <img src="@/assets/Loading.gif" alt="Cargando..." class="GifLoading">
-        </div>
+        <LoadingComponent v-if="loading"/>
         <div v-else-if="Object.keys(filteredBalances).length > 0" class="chart-container">
             <ActualState :balances="filteredBalances"/>
             <BarChart :balances="filteredBalances" class="bar"/>
@@ -18,6 +15,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { useUserStore } from '@/stores/useUserStore';
 import { useCryptoBalanceStore } from '@/stores/useCryptoBalanceStore';
+import LoadingComponent from '@/components/LoadingComponent.vue';
 import BarChart from '@/components/BarChart.vue';
 import PieChart from '@/components/PieChart.vue';
 import ActualState from './ActualState.vue';
@@ -51,20 +49,6 @@ const filteredBalances = computed(() => {
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
-}
-
-.loading-message {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    color: #555;
-}
-
-.GifLoading {
-    width: 150px;
-    margin-top: 10px;
 }
 
 .error-message {
