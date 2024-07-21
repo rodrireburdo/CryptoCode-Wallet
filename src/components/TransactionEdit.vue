@@ -6,7 +6,14 @@
             <form @submit.prevent="submitEdit" class="edit-form">
                 <div class="form-group">
                     <label for="crypto">Criptomoneda:</label>
-                    <input v-model="transaction.crypto_code" id="crypto" type="text" class="form-input" />
+                    <select v-model="transaction.crypto_code" id="crypto" class="form-input" required>
+                        <option value="" disabled>Seleccione una criptomoneda</option>
+                        <option value="btc">Bitcoin (BTC)</option>
+                        <option value="dai">Dai (DAI)</option>
+                        <option value="eth">Ethereum (ETH)</option>
+                        <option value="usdt">Tether (USDT)</option>
+                        <option value="wld">Worldcoin (WLD)</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="amount">Cantidad:</label>
@@ -22,6 +29,9 @@
                 </div>
             </form>
         </div>
+        <LoadingModal v-if="isLoading" />
+        <SuccessModal v-if="isSuccess" @close="handleCloseModal" />
+        <ErrorModal v-if="isError" @close="handleCloseModal" />
     </div>
 </template>
 
@@ -30,11 +40,17 @@ import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import apiClient from '@/services/apiClient';
 import LoadingComponent from './LoadingComponent.vue';
+import LoadingModal from './LoadingModal.vue';
+import SuccessModal from './SuccessModal.vue';
+import ErrorModal from './ErrorModal.vue';
 
 const route = useRoute();
 const router = useRouter();
 const transaction = ref(null);
 const loading = ref(true);
+const isLoading = ref(false);
+const isSuccess = ref(false);
+const isError = ref(false);
 
 const fetchTransaction = async () => {
     try {
@@ -48,20 +64,29 @@ const fetchTransaction = async () => {
 };
 
 const submitEdit = async () => {
+    isLoading.value = true;
     try {
         await apiClient.patch(`/transactions/${route.params.id}`, {
             crypto_code: transaction.value.crypto_code,
             crypto_amount: transaction.value.crypto_amount,
             money: transaction.value.money,
         });
-        alert('Transacción actualizada con éxito');
-        router.push({ name: 'HistoryView' });
+        isLoading.value = false;
+        isSuccess.value = true;
     } catch (error) {
+        isLoading.value = false;
+        isError.value = true;
         console.error('Error al actualizar la transacción:', error);
     }
 };
 
 const cancelEdit = () => {
+    router.push({ name: 'HistoryView' });
+};
+
+const handleCloseModal = () => {
+    isSuccess.value = false;
+    isError.value = false;
     router.push({ name: 'HistoryView' });
 };
 
