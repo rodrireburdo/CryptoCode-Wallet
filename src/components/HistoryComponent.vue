@@ -1,8 +1,6 @@
 <template>
     <div>
-        <div v-if="loading" class="loading-container">
-            <LoadingComponent class="loading-message"/>
-        </div>
+        <LoadingComponent v-if="loading"/>
         <ul v-else class="transaction-list">
             <li v-for="transaction in transactions" :key="transaction._id" class="transaction-item">
                 <div class="transaction-info">
@@ -75,18 +73,6 @@ onMounted(fetchTransactions);
 </script>
 
 <style scoped lang="scss">
-.loading-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    font-size: 20px;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1000;
-}
 
 .transaction-list {
     list-style: none;

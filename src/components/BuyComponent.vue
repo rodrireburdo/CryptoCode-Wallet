@@ -29,7 +29,7 @@
             <label v-if="inputMode === 'money'" for="cryptoAmount">Cantidad de Criptomonedas a Comprar:</label>
             <input v-if="inputMode === 'money'" type="number" v-model="calculatedAmount" step="0.00001" readonly />
 
-            <button type="submit">Guardar</button>
+            <button type="submit">Comprar</button>
         </form>
 
         <LoadingModal v-if="loading" />
