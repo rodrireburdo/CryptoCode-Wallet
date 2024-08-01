@@ -4,8 +4,11 @@
             <img src="../assets/logo.png" class="img-logo" alt="Logo">
             <h1><strong class="text-1">Crypto</strong><strong class="text-2">Code</strong></h1>
         </div>
-        <h4>Tu plataforma para gestionar tus criptomonedas con facilidad y confianza.</h4>
-        <p>Donde tu seguridad y comodidad son nuestra prioridad</p>
+        <div class="div-presentation">
+            <img src="../assets/billetera.png" class="img-wallet">
+            <h3>Tu plataforma para gestionar tus criptomonedas<br>con facilidad y confianza.</h3>
+            <img src="../assets/billetera.png" class="img-wallet">
+        </div>
     </div>
 </template>
 
@@ -18,6 +21,8 @@
 h1 {
     font-family: "Bevan", serif;
     font-weight: 400;
+    font-size: 40px;
+    margin: 0;
 }
 
 .text-2 {
@@ -29,33 +34,38 @@ h1 {
 }
 .img-logo {
     max-width: 200px;
+    margin: 0;
+}
+.img-wallet {
+    max-width: 200px;
+}
+.div-presentation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    background-color: $primary-color;
 }
 
 .div-logo {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;;
+    justify-content: center;
 }
+
 .welcome-section {
+    width: 100%;
+    height: 100%;
     text-align: center;
-    margin-bottom: 10px;
+    background-color: $background-primary;
 }
 
 .welcome-section h3 {
-    font-size: 2em;
-    margin-bottom: 10px;
-    color: #333;
-}
-
-.welcome-section h4 {
-    font-size: 1.5em;
+    font-size: 23px;
     margin-bottom: 20px;
-    color: #555;
+    margin-right: 20px;
+    color: white;
 }
 
-.welcome-section p {
-    font-size: 1.2em;
-    color: #777;
-}
 </style>

@@ -7,6 +7,7 @@
 
 <style lang="scss">
 body {
+  background-color: $background-primary;
   font-family: "Roboto Condensed", sans-serif;
   font-optical-sizing: auto;
   font-style: normal;

@@ -16,6 +16,7 @@
     align-items: center;
     justify-content: center;
     font-size: 20px;
+    margin-top: 30px;
     color: #555;
 }
 

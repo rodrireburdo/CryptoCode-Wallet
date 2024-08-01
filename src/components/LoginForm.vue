@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="div-login">
         <form class="login-form" @submit.prevent="access">
             <label for="username" class="label-username">Ingresa tu nombre de usuario</label>
             <p v-if="error" class="error-message">*Debe ingresar un nombre de usuario</p>
@@ -50,38 +50,56 @@ const access = () => {
 </script>
 
 <style scoped lang="scss">
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+.div-login {
+    background-color: $secondary-color;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 0;
+    padding: 20px; /* Espacio alrededor del formulario */
+    box-sizing: border-box;
+}
+
 .login-form {
     display: flex;
     flex-direction: column;
+    align-items: center;
     text-align: center;
-    justify-content: center;
     background-color: $background-primary;
-    padding: 15px;
+    padding: 20px;
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    width: 100%;
+    width: 400px;
 }
 
 .label-username {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     color: #333;
 }
 
 .input-username {
-    padding: 5px;
-    margin-bottom: 10px;
+    padding: 10px;
+    margin-bottom: 15px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .btn-access {
-    padding: 10px 10px;
+    padding: 10px 20px;
     color: #fff;
     background-color: $primary-color;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
+    font-size: 16px;
 }
 
 .btn-access:hover {
@@ -90,5 +108,6 @@ const access = () => {
 
 .error-message {
     color: red;
+    margin-bottom: 10px;
 }
 </style>

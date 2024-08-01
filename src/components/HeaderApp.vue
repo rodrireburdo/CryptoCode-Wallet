@@ -5,7 +5,7 @@
             <h1><strong class="text-1">Crypto</strong><strong class="text-2">Code</strong></h1>
         </div>
         <div class="dropdown" @click="toggleDropdown">
-            <button>{{ buttonText }}</button>
+            <button>{{ userName }}</button>
             <div v-if="showDropdown" class="dropdown-content">
                 <a v-if="userName" @click="logout">Cerrar Sesión</a>
             </div>
@@ -27,10 +27,6 @@ const showDropdown = ref(false);
 const toggleDropdown = () => {
     showDropdown.value = !showDropdown.value;
 };
-
-const buttonText = computed(() => {
-    return userName.value ? userName.value : 'Inicie Sesión';
-});
 
 const logout = () => {
     userStore.setUserName('');

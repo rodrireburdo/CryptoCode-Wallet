@@ -67,8 +67,6 @@ const totalValueInPesos = computed(() => {
 
 <style scoped lang="scss"> 
 .actual-state {
-    border: 1px solid #ccc;
-    background-color: #f9f9f9;
     padding: 0px 100px;
 }
 

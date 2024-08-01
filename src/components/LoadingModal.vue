@@ -1,7 +1,6 @@
 <template>
     <div class="modal-overlay">
         <div class="modal-content">
-            <p>Procesando...</p>
             <img src="@/assets/Loading.gif" alt="Procesando..." class="loading-gif">
         </div>
     </div>
@@ -24,7 +23,6 @@
 }
 
 .modal-content {
-    background-color: white;
     padding: 20px;
     border-radius: 10px;
     text-align: center;
@@ -33,5 +31,8 @@
 .loading-gif {
     width: 150px;
     margin-top: 10px;
+}
+p {
+    color: white;
 }
 </style>
