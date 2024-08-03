@@ -10,7 +10,7 @@
 <script setup>
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -33,5 +33,14 @@
 button {
     margin-top: 10px;
     padding: 5px 10px;
+    background-color: $primary-color;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: $secondary-color;
 }
 </style>

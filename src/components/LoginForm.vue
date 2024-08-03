@@ -1,11 +1,9 @@
 <template>
     <div class="div-login">
         <form class="login-form" @submit.prevent="access">
-            <label for="username" class="label-username">Ingresa tu nombre de usuario</label>
             <p v-if="error" class="error-message">*Debe ingresar un nombre de usuario</p>
-            <p v-if="lengthError" class="error-message">*El nombre de usuario debe tener al menos 6 caracteres</p>
-            <p v-if="uppercaseError" class="error-message">*El nombre de usuario debe contener al menos una letra mayúscula</p>
-            <input v-model="userName" id="username" class="input-username" type="text" required/>
+            <p v-if="lengthError" class="error-message">*El nombre de usuario debe tener al menos 6 caracteres y una mayúscula</p>
+            <input v-model="userName" id="username" class="input-username" placeholder="Nombre de usuario" type="text" />
             <button type="submit" class="btn-access">Acceder</button>
         </form>
     </div>
@@ -40,7 +38,7 @@ const access = () => {
     }
 
     if (!/[A-Z]/.test(userName.value)) {
-        uppercaseError.value = true;
+        lengthError.value = true;
         return;
     }
 
@@ -56,12 +54,11 @@ html, body {
 }
 
 .div-login {
-    background-color: $secondary-color;
     display: flex;
     justify-content: center;
     width: 100%;
     margin: 0;
-    padding: 20px; /* Espacio alrededor del formulario */
+    padding: 20px; 
     box-sizing: border-box;
 }
 
@@ -70,11 +67,7 @@ html, body {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    background-color: $background-primary;
-    padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    width: 400px;
 }
 
 .label-username {
@@ -87,7 +80,6 @@ html, body {
     margin-bottom: 15px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    width: 100%;
     box-sizing: border-box;
 }
 
