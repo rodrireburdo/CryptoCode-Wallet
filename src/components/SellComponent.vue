@@ -2,7 +2,7 @@
     <div>
         <form @submit.prevent="submitTransaction" class="form">
             <label for="crypto">Criptomoneda:</label>
-            <select v-model="crypto" @change="fetchCryptoPrice" required>
+            <select v-model="crypto" @change="fetchCryptoPrice">
                 <option value="" disabled>Seleccione una criptomoneda</option>
                 <option value="btc">Bitcoin (BTC)</option>
                 <option value="dai">Dai (DAI)</option>
@@ -12,10 +12,7 @@
             </select>
 
             <label for="amount">Cantidad:</label>
-            <input type="number" v-model="amount" @input="updatePrice" step="0.00001" required />
-
-            <label for="price">Precio (ARS por unidad):</label>
-            <input type="number" v-model="unitPrice" step="0.01" readonly />
+            <input type="number" v-model="amount" @input="updatePrice" step="0.00001"/>
 
             <label for="total">Total a recibir (ARS):</label>
             <input type="number" v-model="totalReceived" step="0.01" readonly />
@@ -25,8 +22,8 @@
         </form>
 
         <LoadingModal v-if="loading" />
-        <SuccessModal v-if="showSuccessModal" @close="showSuccessModal = false" :message="successMessage" />
-        <ErrorModal v-if="showErrorModal" @close="showErrorModal = false" :message="errorMessage" />
+        <SuccessModal v-if="successModal" @close="successModal = false" :message="successMessage" />
+        <ErrorModal v-if="errorModal" @close="errorModal = false" :message="errorMessage" />
     </div>
 </template>
 
@@ -45,24 +42,20 @@ const userName = computed(() => userStore.userName);
 const cryptoPricesStore = useCryptoPricesStore();
 const cryptoBalanceStore = useCryptoBalanceStore();
 
-// Variables reactivas para los campos del formulario
 const crypto = ref('');
 const amount = ref('');
 const unitPrice = ref(0);
 const totalReceived = ref(0);
-const loading = ref(false); // Estado de carga
-const showSuccessModal = ref(false); // Mostrar modal de éxito
-const showErrorModal = ref(false); // Mostrar modal de error
-const successMessage = ref(''); // Mensaje de éxito
-const errorMessage = ref(''); // Mensaje de error
-const formError = ref(''); // Mensaje de error del formulario
+const loading = ref(false);
+const successModal = ref(false);
+const errorModal = ref(false);
+const formError = ref('');
 
 onMounted(async () => {
     try {
         await cryptoBalanceStore.fetchBalances(userName.value);
     } catch (error) {
-        errorMessage.value = 'Error al cargar los balances del usuario';
-        showErrorModal.value = true;
+        errorModal.value = true;
     }
 });
 
@@ -98,11 +91,10 @@ const submitTransaction = async () => {
     formError.value = '';
 
     if (amount.value <= 0 || totalReceived.value <= 0) {
-        formError.value = 'La cantidad y el total a recibir deben ser mayores a 0';
+        formError.value = 'Seleccione una criptomoneda y la cantidad a vender';
         return;
     }
 
-    // Verificar si el usuario tiene suficiente cantidad de la criptomoneda seleccionada
     if (amount.value > cryptoBalanceStore.balances[crypto.value]) {
         formError.value = 'No tienes suficiente cantidad de la criptomoneda seleccionada';
         return;
@@ -110,7 +102,6 @@ const submitTransaction = async () => {
 
     const now = new Date();
     const formattedDatetime = now.toISOString();
-
 
     const transaction = {
         user_id: userName.value,
@@ -121,27 +112,26 @@ const submitTransaction = async () => {
         datetime: formattedDatetime,
     };
 
-    loading.value = true; // Mostrar el modal de carga
+    loading.value = true;
 
     try {
         await apiClient.post('/transactions', transaction);
         cryptoBalanceStore.updateBalance(crypto.value, amount.value, 'sale');
-        successMessage.value = 'Transacción guardada con éxito';
-        showSuccessModal.value = true; // Mostrar el modal de éxito
-        resetForm(); // Restablecer el formulario
+        successModal.value = true;
+        resetForm();
     } catch (error) {
-        formError.value = 'Hubo un error al guardar la transacción';
+        errorModal.value = true;
     } finally {
-        loading.value = false; // Ocultar el modal de carga
+        loading.value = false;
     }
 };
 </script>
-
 
 <style scoped lang="scss">
 .form {
     max-width: 600px;
     margin: 0 auto;
+    margin-top: 20px;
     display: flex;
     flex-direction: column;
 }
@@ -172,6 +162,6 @@ button:hover {
 .error-message {
     display: flex;
     justify-content: center;
-    color: red;
+    color: $error-color;
 }
 </style>

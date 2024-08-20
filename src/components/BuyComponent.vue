@@ -1,8 +1,8 @@
 <template>
     <div>
-        <form @submit.prevent="submitTransaction">
+        <form @submit.prevent="submitTransaction" class="form">
             <label for="crypto">Criptomoneda:</label>
-            <select v-model="crypto" @change="fetchCryptoPrice" required>
+            <select v-model="crypto" @change="fetchCryptoPrice">
                 <option value="" disabled>Seleccione una criptomoneda</option>
                 <option value="btc">Bitcoin (BTC)</option>
                 <option value="dai">Dai (DAI)</option>
@@ -11,35 +11,24 @@
                 <option value="wld">Worldcoin (WLD)</option>
             </select>
 
-            <button type="button" @click="toggleInputMode">
-                {{ inputMode === 'crypto' ? 'Cambiar a Monto en ARS' : 'Cambiar a Cantidad de Criptomonedas' }}
-            </button>
+            <label for="amount">Cantidad:</label>
+            <input type="number" v-model="amount" @input="updatePrice" step="0.00001"/>
 
-            <label v-if="inputMode === 'crypto'" for="amount">Cantidad de Criptomonedas:</label>
-            <input v-if="inputMode === 'crypto'" type="number" v-model="amount" @input="updatePriceFromAmount"
-                step="0.00001" required />
-
-            <label v-if="inputMode === 'money'" for="money">Monto en ARS:</label>
-            <input v-if="inputMode === 'money'" type="number" v-model="money" @input="updateAmountFromMoney" step="0.01"
-                required />
-
-            <label v-if="inputMode === 'crypto'" for="price">Precio (ARS):</label>
-            <input v-if="inputMode === 'crypto'" type="number" v-model="price" step="0.01" readonly />
-
-            <label v-if="inputMode === 'money'" for="cryptoAmount">Cantidad de Criptomonedas a Comprar:</label>
-            <input v-if="inputMode === 'money'" type="number" v-model="calculatedAmount" step="0.00001" readonly />
+            <label for="total">Total a pagar (ARS):</label>
+            <input type="number" v-model="totalPaid" step="0.01" readonly />
 
             <button type="submit">Comprar</button>
+            <p v-if="formError" class="error-message">{{ formError }}</p>
         </form>
 
         <LoadingModal v-if="loading" />
-        <SuccessModal v-if="showSuccessModal" @close="showSuccessModal = false" />
-        <ErrorModal v-if="showErrorModal" @close="showErrorModal = false" />
+        <SuccessModal v-if="successModal" @close="successModal = false" />
+        <ErrorModal v-if="errorModal" @close="errorModal = false" />
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useUserStore } from '@/stores/useUserStore';
 import { useCryptoPricesStore } from '@/stores/useCryptoPricesStore';
 import apiClient from '@/services/apiClient';
@@ -48,114 +37,93 @@ import SuccessModal from '@/components/SuccessModal.vue';
 import ErrorModal from '@/components/ErrorModal.vue';
 
 const userStore = useUserStore();
+const userName = computed(() => userStore.userName);
 const cryptoPricesStore = useCryptoPricesStore();
-const userName = userStore.userName;
 
-// Variables reactivas para los campos del formulario
 const crypto = ref('');
 const amount = ref('');
-const money = ref('');
-const price = ref('');
-const unitPrice = ref(0); // Precio unitario de la criptomoneda
-const inputMode = ref('crypto'); // Modo de entrada: 'crypto' o 'money'
-const calculatedAmount = ref(''); // Cantidad de criptomonedas calculada a partir del monto en ARS
-const loading = ref(false); // Estado de carga
-const showSuccessModal = ref(false); // Mostrar modal de éxito
-const showErrorModal = ref(false); // Mostrar modal de error
+const unitPrice = ref(0);
+const totalPaid = ref(0);
+const loading = ref(false);
+const successModal = ref(false);
+const errorModal = ref(false);
+const formError = ref('');
 
-// Alternar el modo de entrada
-const toggleInputMode = () => {
-    inputMode.value = inputMode.value === 'crypto' ? 'money' : 'crypto';
-    clearFormFields();
-};
+onMounted(async () => {
+    try {
+        await cryptoPricesStore.fetchPrices();
+    } catch (error) {
+        errorModal.value = true;
+    }
+});
 
-// Obtener el precio de la criptomoneda seleccionada
-const fetchCryptoPrice = () => {
+const fetchCryptoPrice = async () => {
     if (!crypto.value) return;
-    unitPrice.value = cryptoPricesStore.prices[crypto.value].ask || 0;
-    updatePriceFromAmount();
+
+    await cryptoPricesStore.fetchPrices();
+    unitPrice.value = cryptoPricesStore.prices[crypto.value]?.ask;
+    if (unitPrice.value) {
+        updatePrice();
+    } else {
+        formError.value = 'Error al obtener el precio de la criptomoneda';
+    }
 };
 
-// Actualizar el precio total basado en la cantidad de criptomonedas
-const updatePriceFromAmount = () => {
+const updatePrice = () => {
     if (amount.value && unitPrice.value) {
-        price.value = (amount.value * unitPrice.value).toFixed(2);
-        money.value = '';
-        calculatedAmount.value = '';
+        totalPaid.value = (amount.value * unitPrice.value).toFixed(2);
     } else {
-        price.value = 0;
+        totalPaid.value = 0;
     }
 };
 
-// Actualizar la cantidad de criptomonedas basado en el monto de dinero
-const updateAmountFromMoney = () => {
-    if (money.value && unitPrice.value) {
-        calculatedAmount.value = (money.value / unitPrice.value).toFixed(5);
-        price.value = money.value;
-    } else {
-        calculatedAmount.value = 0;
-    }
-};
-
-// Limpiar los campos del formulario
-const clearFormFields = () => {
+const resetForm = () => {
     crypto.value = '';
     amount.value = '';
-    money.value = '';
-    price.value = '';
-    calculatedAmount.value = '';
+    unitPrice.value = 0;
+    totalPaid.value = 0;
+    formError.value = '';
 };
 
-// Enviar la transacción a la API
 const submitTransaction = async () => {
-    // Validar que los datos sean correctos
-    const finalAmount = inputMode.value === 'crypto' ? amount.value : calculatedAmount.value;
-    const finalPrice = inputMode.value === 'crypto' ? price.value : money.value;
+    formError.value = '';
 
-    if (finalAmount <= 0 || finalPrice <= 0) {
-        alert('La cantidad y el precio deben ser mayores a 0');
+    if (amount.value <= 0 || totalPaid.value <= 0) {
+        formError.value = 'Seleccione una criptomoneda y la cantidad a comprar';
         return;
     }
 
-    // Capturar la fecha y hora actual
     const now = new Date();
     const formattedDatetime = now.toISOString();
 
-    // Construir el objeto de la transacción
     const transaction = {
-        user_id: userName,
+        user_id: userName.value,
         action: 'purchase',
         crypto_code: crypto.value,
-        crypto_amount: finalAmount,
-        money: finalPrice,
-        datetime: formattedDatetime
+        crypto_amount: amount.value,
+        money: totalPaid.value,
+        datetime: formattedDatetime,
     };
 
-    loading.value = true; // Mostrar el modal de carga
-    
-    // Enviar la solicitud POST a la API
+    loading.value = true;
+
     try {
         await apiClient.post('/transactions', transaction);
-        showSuccessModal.value = true; // Mostrar el modal de éxito
-        clearFormFields(); // Limpiar los campos del formulario
+        successModal.value = true;
+        resetForm();
     } catch (error) {
-        console.error('Error al guardar la transacción:', error);
-        showErrorModal.value = true; // Mostrar el modal de error
+        errorModal.value = true;
     } finally {
-        loading.value = false; // Ocultar el modal de carga
+        loading.value = false;
     }
 };
-
-// Llamar a fetchPrices del store cuando el componente se monta
-onMounted(() => {
-    cryptoPricesStore.fetchPrices();
-});
 </script>
 
 <style scoped lang="scss">
-form {
+.form {
     max-width: 600px;
     margin: 0 auto;
+    margin-top: 20px;
     display: flex;
     flex-direction: column;
 }
@@ -181,5 +149,11 @@ button {
 
 button:hover {
     background-color: $secondary-color;
+}
+
+.error-message {
+    display: flex;
+    justify-content: center;
+    color: $error-color;
 }
 </style>

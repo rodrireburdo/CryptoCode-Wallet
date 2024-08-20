@@ -8,9 +8,9 @@
                     <p>$ {{ transaction.money }}</p>
                 </div>
                 <div class="transaction-actions">
-                    <button class="btn-view" @click="viewTransaction(transaction._id)">Ver</button>
-                    <button class="btn-edit" @click="editTransaction(transaction._id)">Editar</button>
-                    <button class="btn-delete" @click="deleteTransaction(transaction._id)">Eliminar</button>
+                    <button class="btn-view" @click="viewTransaction(transaction._id)"><i class="fa-solid fa-eye"></i></button>
+                    <button class="btn-edit" @click="editTransaction(transaction._id)"><i class="fa-solid fa-file-pen"></i></button>
+                    <button class="btn-delete" @click="deleteTransaction(transaction._id)"><i class="fa-solid fa-trash"></i></button>
                 </div>
             </li>
         </ul>
@@ -54,14 +54,14 @@ const editTransaction = (id) => {
 };
 
 const deleteTransaction = async (id) => {
-    deleteLoading.value = true; // Mostrar el modal de carga
+    deleteLoading.value = true;
     try {
         await apiClient.delete(`/transactions/${id}`);
         fetchTransactions(); 
     } catch (error) {
         console.error('Error al eliminar la transacción:', error);
     } finally {
-        deleteLoading.value = false; // Ocultar el modal de carga
+        deleteLoading.value = false;
     }
 };
 
@@ -97,15 +97,31 @@ onMounted(fetchTransactions);
 }
 
 .btn-view, .btn-edit, .btn-delete {
-    background-color: $primary-color;
     color: #fff;
     border: none;
     padding: 10px 20px;
     cursor: pointer;
 }
 
-.btn-view:hover, .btn-edit:hover, .btn-delete:hover {
-    background-color: $secondary-color;
+.btn-view {
+    background-color: $background-view;
+}
+.btn-view:hover{
+    background-color: $background-view2;
+}
+
+.btn-edit {
+    background-color: $background-edit;
+}
+.btn-edit:hover {
+    background-color: $background-edit2;
+}
+
+.btn-delete {
+    background-color: $background-delete;
+}
+.btn-delete:hover {
+    background-color: $background-delete2;
 }
 
 .no-transactions {

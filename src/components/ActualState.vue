@@ -1,6 +1,6 @@
 <template>
     <div class="actual-state">
-        <h2>Tus Criptomonedas</h2>
+        <h2>Tienes ${{ totalValueInPesos }} en criptomonedas</h2>
         <table>
             <thead>
                 <tr>
@@ -15,11 +15,6 @@
                     <td>{{ crypto.toUpperCase() }}</td>
                     <td>{{ balance }}</td>
                     <td>${{ getCryptoValueInPesos(crypto, balance) }}</td>
-                </tr>
-                <tr :class="'row-total'">
-                    <td><strong>TOTAL</strong></td>
-                    <td></td>
-                    <td><strong>${{ totalValueInPesos }}</strong></td>
                 </tr>
             </tbody>
         </table>
