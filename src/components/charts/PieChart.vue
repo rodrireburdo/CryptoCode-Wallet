@@ -1,7 +1,9 @@
 <template>
-    <div class="chart-container">
-        <Pie :data="chartData" :options="chartOptions" />
-    </div>
+    <section class="chart-container">
+        <div class="chart">
+            <Pie :data="chartData" :options="chartOptions" />
+        </div>
+    </section>
 </template>
 
 <script setup>
@@ -47,11 +49,11 @@ const chartOptions = {
     plugins: {
         title: {
             display: true,
-            text: 'Porcentaje de Criptomonedas'
+            text: 'Porcentaje de cada criptomoneda'
         },
         legend: {
             position: 'bottom'
-        }
+        },
     }
 }
 </script>
@@ -61,5 +63,10 @@ const chartOptions = {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.chart {
+    width: 400px;
+    height: 300px;
 }
 </style>

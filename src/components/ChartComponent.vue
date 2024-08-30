@@ -1,10 +1,15 @@
 <template>
     <div class="actual-state">
         <LoadingComponent v-if="loading"/>
-        <div v-else-if="Object.keys(filteredBalances).length > 0" class="chart-container">
-            <ActualState :balances="filteredBalances"/>
-            <BarChart :balances="filteredBalances" class="bar"/>
-            <PieChart :balances="filteredBalances" class="pie"/>
+        <div v-else-if="Object.keys(filteredBalances).length > 0" >
+            <ActualState/>
+                <div class="charts-container">
+                    <h2>----- Estadisticas -----</h2>
+                    <div class="chart">
+                        <BarChart class="bar"/>
+                        <PieChart class="pie"/>
+                    </div>
+                </div>
         </div>
         <section v-else class="error-message">
             <p>No tienes criptomonedas registradas.</p>
@@ -16,8 +21,8 @@ import { ref, computed, onMounted } from 'vue';
 import { useUserStore } from '@/stores/useUserStore';
 import { useCryptoBalanceStore } from '@/stores/useCryptoBalanceStore';
 import LoadingComponent from '@/components/LoadingComponent.vue';
-import BarChart from '@/components/BarChart.vue';
-import PieChart from '@/components/PieChart.vue';
+import BarChart from '@/components/charts/BarChart.vue';
+import PieChart from '@/components/charts/PieChart.vue';
 import ActualState from './ActualState.vue';
 
 const userStore = useUserStore();
@@ -26,9 +31,7 @@ const loading = ref(true);
 
 onMounted(async () => {
     try {
-        console.log('Fetching balances for user:', userStore.userName);
         await cryptoBalanceStore.fetchBalances(userStore.userName);
-        console.log('Balances fetched:', cryptoBalanceStore.balances);
     } catch (error) {
         console.error('Error al obtener balances:', error);
     } finally {
@@ -44,8 +47,14 @@ const filteredBalances = computed(() => {
     );
 });
 </script>
+
 <style scoped>
-.chart-container {
+h2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.chart {
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;

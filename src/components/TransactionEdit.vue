@@ -20,6 +20,8 @@
                 <label for="money">Precio:</label>
                 <input v-model="transaction.money" id="money" type="number" step="0.01" class="form-input" />
                 
+                <p v-if="errors" class="error-message">No puedes introducir valores menores a 0.</p>
+                
                 <div class="button-container">
                     <button type="submit" class="btn-submit">Guardar Cambios</button>
                     <button type="button" class="btn-submit" @click="cancelEdit">Cancelar</button>
@@ -37,9 +39,9 @@ import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import apiClient from '@/services/apiClient';
 import LoadingComponent from './LoadingComponent.vue';
-import LoadingModal from './LoadingModal.vue';
-import SuccessModal from './SuccessModal.vue';
-import ErrorModal from './ErrorModal.vue';
+import LoadingModal from './modals/LoadingModal.vue';
+import SuccessModal from './modals/SuccessModal.vue';
+import ErrorModal from './modals/ErrorModal.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -48,6 +50,7 @@ const loading = ref(true);
 const isLoading = ref(false);
 const isSuccess = ref(false);
 const isError = ref(false);
+const errors = ref(false);
 
 const fetchTransaction = async () => {
     try {
@@ -60,7 +63,16 @@ const fetchTransaction = async () => {
     }
 };
 
+const validate = () => {
+    errors.value = transaction.value.crypto_amount < 0 || transaction.value.money < 0;
+};
+
 const submitEdit = async () => {
+    validate();
+    if (errors.value) {
+        return;
+    }
+
     isLoading.value = true;
     try {
         await apiClient.patch(`/transactions/${route.params.id}`, {
@@ -115,6 +127,13 @@ label {
     border: 1px solid #ccc;
 }
 
+.error-message {
+    color: $error-color;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    text-align: center;
+}
+
 .button-container {
     display: flex;
     justify-content: space-between;
@@ -123,13 +142,13 @@ label {
 
 .btn-submit {
     padding: 10px;
-    background-color: $primary-color;
+    background-color: $secondary-color;
     color: white;
     border: none;
     cursor: pointer;
 }
 
 .btn-submit:hover {
-    background-color: $secondary-color;
+    background-color: $primary-color;
 }
 </style>

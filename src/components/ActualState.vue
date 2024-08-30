@@ -85,7 +85,7 @@ td {
 }
 
 th {
-    background-color: $primary-color;
+    background-color: $secondary-color;
     color: white;
 }
 

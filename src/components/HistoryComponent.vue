@@ -8,9 +8,18 @@
                     <p>$ {{ transaction.money }}</p>
                 </div>
                 <div class="transaction-actions">
-                    <button class="btn-view" @click="viewTransaction(transaction._id)"><i class="fa-solid fa-eye"></i></button>
-                    <button class="btn-edit" @click="editTransaction(transaction._id)"><i class="fa-solid fa-file-pen"></i></button>
-                    <button class="btn-delete" @click="deleteTransaction(transaction._id)"><i class="fa-solid fa-trash"></i></button>
+                    <button class="btn-view" @click="viewTransaction(transaction._id)">
+                        <i class="fa-solid fa-eye"></i>
+                        <span class="tooltip-text">Ver Transacción</span>
+                    </button>
+                    <button class="btn-edit" @click="editTransaction(transaction._id)">
+                        <i class="fa-solid fa-file-pen"></i>
+                        <span class="tooltip-text">Editar Transacción</span>
+                    </button>
+                    <button class="btn-delete" @click="deleteTransaction(transaction._id)">
+                        <i class="fa-solid fa-trash"></i>
+                        <span class="tooltip-text">Eliminar Transacción</span>
+                    </button>
                 </div>
             </li>
         </ul>
@@ -24,9 +33,8 @@ import { ref, onMounted } from 'vue';
 import apiClient from '@/services/apiClient';
 import { useUserStore } from '@/stores/useUserStore';
 import { useRouter } from 'vue-router';
-import LoadingModal from '@/components/LoadingModal.vue';
+import LoadingModal from '@/components/modals/LoadingModal.vue';
 import LoadingComponent from './LoadingComponent.vue';
-
 
 const transactions = ref([]);
 const loading = ref(true);
@@ -73,7 +81,6 @@ onMounted(fetchTransactions);
 </script>
 
 <style scoped lang="scss">
-
 .transaction-list {
     list-style: none;
     padding: 0;
@@ -94,6 +101,7 @@ onMounted(fetchTransactions);
 .transaction-actions {
     display: flex;
     gap: 10px;
+    position: relative;
 }
 
 .btn-view, .btn-edit, .btn-delete {
@@ -101,6 +109,7 @@ onMounted(fetchTransactions);
     border: none;
     padding: 10px 20px;
     cursor: pointer;
+    position: relative; /* Required for tooltip positioning */
 }
 
 .btn-view {
@@ -124,10 +133,32 @@ onMounted(fetchTransactions);
     background-color: $background-delete2;
 }
 
+.tooltip-text {
+    visibility: hidden;
+    width: 120px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+}
+
+.btn-view:hover .tooltip-text,
+.btn-edit:hover .tooltip-text,
+.btn-delete:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
 .no-transactions {
     text-align: center;
     font-size: 18px;
     margin-top: 20px;
 }
 </style>
-

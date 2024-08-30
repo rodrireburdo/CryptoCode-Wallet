@@ -26,7 +26,7 @@ const chartData = computed(() => ({
     labels: ['BTC', 'DAI', 'ETH', 'USDT', 'WLD'],
     datasets: [
         {
-            label: 'Cantidad de Criptomonedas',
+            label: ' ',
             backgroundColor: ['#FF6455', '#F8BD4A', '#A5B1C2', '#4AB9B1', '#CCCFC9'],
             data: [
                 cryptoBalanceStore.balances.btc,
@@ -52,6 +52,10 @@ const chartOptions = {
             labels: {
                 boxWidth: 0,
             }
+        },
+        title: {
+            display: true,
+            text: 'Cantidad de Criptomonedas'
         }
     }
 }

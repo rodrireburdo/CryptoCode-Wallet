@@ -33,9 +33,9 @@ import { useUserStore } from '@/stores/useUserStore';
 import { useCryptoPricesStore } from '@/stores/useCryptoPricesStore';
 import { useCryptoBalanceStore } from '@/stores/useCryptoBalanceStore';
 import apiClient from '@/services/apiClient';
-import LoadingModal from '@/components/LoadingModal.vue';
-import SuccessModal from '@/components/SuccessModal.vue';
-import ErrorModal from '@/components/ErrorModal.vue';
+import LoadingModal from '@/components/modals/LoadingModal.vue';
+import SuccessModal from '@/components/modals/SuccessModal.vue';
+import ErrorModal from '@/components/modals/ErrorModal.vue';
 
 const userStore = useUserStore();
 const userName = computed(() => userStore.userName);
@@ -149,14 +149,14 @@ select {
 button {
     margin-top: 15px;
     padding: 10px;
-    background-color: $primary-color;
+    background-color: $secondary-color;
     color: white;
     border: none;
     cursor: pointer;
 }
 
 button:hover {
-    background-color: $secondary-color;
+    background-color: $primary-color;
 }
 
 .error-message {

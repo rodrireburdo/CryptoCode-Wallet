@@ -48,7 +48,6 @@ export const useCryptoBalanceStore = defineStore('cryptoBalance', {
         },
 
         resetBalances() {
-            // Reseteando los balances a 0 antes de procesar las transacciones
             this.balances.btc = 0;
             this.balances.dai = 0;
             this.balances.eth = 0;
@@ -63,13 +62,15 @@ export const useCryptoBalanceStore = defineStore('cryptoBalance', {
         },
 
         adjustBalance(cryptoCode, amount, action) {
-            const parsedAmount = parseFloat(amount);
+            const parsedAmount = parseFloat(amount).toFixed(5);
 
             if (action === 'purchase') {
-                this.balances[cryptoCode] += parsedAmount;
+                this.balances[cryptoCode] = (parseFloat(this.balances[cryptoCode]) + parseFloat(parsedAmount)).toFixed(5);
             } else if (action === 'sale') {
-                this.balances[cryptoCode] -= parsedAmount;
+                this.balances[cryptoCode] = (parseFloat(this.balances[cryptoCode]) - parseFloat(parsedAmount)).toFixed(5);
             }
+
+            this.balances[cryptoCode] = parseFloat(this.balances[cryptoCode]);
         },
 
         preventNegativeBalance(cryptoCode) {
