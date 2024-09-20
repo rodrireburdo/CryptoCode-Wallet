@@ -22,6 +22,6 @@ html, body {
     align-items: center;
     padding-top: 20px;
     min-height: 100vh;
-    background: linear-gradient(to bottom,$background-primary, $primary-color, $secondary-color);
+    background-image: radial-gradient(125% 125% at 50% 10%, #000000, #4623A3);
 }
 </style>

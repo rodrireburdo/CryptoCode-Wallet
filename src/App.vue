@@ -8,6 +8,8 @@
 <style lang="scss">
 body {
   background-color: $background-primary;
+  background-image: radial-gradient(#6b73811f 1px, transparent 1px);
+  background-size: 16px 16px; /* Establece el tamaño del fondo */
   font-family: "Roboto Condensed", sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
