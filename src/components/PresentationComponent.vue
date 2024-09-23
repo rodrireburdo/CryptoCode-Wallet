@@ -44,22 +44,23 @@ h1 {
 .img-logo {
     max-width: 250px;
     margin: 0;
+    margin-top: 30px;
 }
 
 .img-wallet-1 {
     position: absolute;
-    width: 250px; /* Ajusta el tamaño según sea necesario */
+    width: 250px;
     max-width: none;
-    top: 0px; /* Ajusta la posición desde el borde superior del contenedor */
-    left: 20px; /* Ajusta la posición desde el borde izquierdo del contenedor */
+    top: 0px;
+    left: 20px;
 }
 
 .img-wallet-2 {
     position: absolute;
-    width: 225px; /* Ajusta el tamaño según sea necesario */
+    width: 225px;
     max-width: none;
-    bottom: 0px; /* Ajusta la posición desde el borde inferior del contenedor */
-    right: 20px; /* Ajusta la posición desde el borde derecho del contenedor */
+    bottom: 0px;
+    right: 20px;
 }
 
 .div-presentation {

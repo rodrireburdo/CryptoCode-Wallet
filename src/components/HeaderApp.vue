@@ -71,11 +71,11 @@ const logout = () => {
 }
 
 .dropdown-content {
-    display: none; /* Inicialmente oculto */
+    display: none; 
     position: absolute;
-    top: 100%; /* Posiciona abajo del botón */
-    left: 50%; /* Centrado horizontalmente */
-    transform: translateX(-50%); /* Ajusta para centrar horizontalmente */
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
     background-color: white;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     padding: 12px 16px;
@@ -85,12 +85,12 @@ const logout = () => {
 
 .dropdown-content a {
     text-decoration: none;
-    display: block; /* Bloque en lugar de flex para centrar */
-    text-align: center; /* Centrado del texto */
+    display: block;
+    text-align: center;
 }
 
 .dropdown:hover .dropdown-content {
-    display: block; /* Mostrar cuando se pasa el mouse */
+    display: block;
 }
 
 button {

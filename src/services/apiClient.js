@@ -12,7 +12,7 @@ export const getUserTransactions = async (userId) => {
         const response = await apiClient.get(`/transactions?q={"user_id": "${userId}"}`);
         return response.data;
     } catch (error) {
-        console.error('Error fetching user transactions:', error);
+        console.error('Error para obtener las transacciones del usuaro', error);
         throw error;
     }
 };
@@ -22,7 +22,7 @@ export const getCryptoPrice = async (exchange, crypto) => {
         const response = await axios.get(`https://criptoya.com/api/${exchange}/${crypto}/ars`);
         return response.data;
     } catch (error) {
-        console.error(`Error fetching price for ${crypto} from ${exchange}:`, error);
+        console.error("Error para obtener el precio", error);
         throw error;
     }
 };

@@ -41,7 +41,6 @@ onMounted(async () => {
 
 const filteredBalances = computed(() => {
     const balances = cryptoBalanceStore.balances;
-    console.log('Calculating filtered balances from:', balances);
     return Object.fromEntries(
         Object.entries(balances).filter(([, amount]) => amount > 0)
     );

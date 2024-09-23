@@ -17,11 +17,10 @@ html, body {
     padding: 0;
 }
 .container {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-rows: auto auto;
+    min-height: 100dvh;
     align-items: center;
-    padding-top: 20px;
-    min-height: 100vh;
     background-image: radial-gradient(125% 125% at 50% 10%, #000000, #4623A3);
 }
 </style>

@@ -11,7 +11,7 @@ export const useCryptoBalanceStore = defineStore('cryptoBalance', {
             wld: 0,
         },
         loading: false,
-        error: null,
+        error: true,
     }),
 
     actions: {

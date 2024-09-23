@@ -35,7 +35,7 @@
     color: white;
     text-decoration: none;
     display: block;
-    padding: 5px 10px; // Añadido relleno horizontal para un área de clic más grande
+    padding: 5px 10px;
 }
 
 .nav a:hover {
